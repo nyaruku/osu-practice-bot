@@ -1,0 +1,28 @@
+{
+  "name": "osu-practice-bot",
+  "version": "0.0.1",
+  "main": "dist/Index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "NODE_ENV=production node -r tsconfig-paths/register dist/Index.js",
+    "dev": "NODE_ENV=development ts-node -r tsconfig-paths/register src/Index.ts",
+    "clean": "rimraf dist",
+    "typecheck": "tsc --noEmit",
+    "build:watch": "tsc --watch"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "osu-api-v2-js": "^2.1.5",
+    "pg": "^8.16.3",
+    "tsconfig-paths": "^4.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.13.6",
+    "@types/node-fetch": "^2.6.13",
+    "@types/pg": "^8.15.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  },
+  "description": "",
+  "author": "nyaruku"
+}
