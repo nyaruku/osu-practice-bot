@@ -1,0 +1,111 @@
+import path from 'path';
+import dotenv from 'dotenv';
+
+export class Environment {
+    // Environment Object
+    public static env: EnvType;
+    
+    public static initialize(): void {
+        console.log("Loading Environment variables...");
+
+        const nodeEnv = process.env.NODE_ENV ?? "development";
+        const envPath = path.resolve(__dirname, `../.env.${nodeEnv}`);
+        console.log(`Looking for env file at: ${envPath}`);
+
+        dotenv.config({ path: envPath, override: true });
+
+        console.log("Checking Environment variables...");
+        const requiredEnvVars = [
+            // osu! api v2
+            'OSU_API_CLIENT_ID',
+            'OSU_API_CLIENT_SECRET',
+
+            // IRC
+            'IRC_USERNAME',
+            'IRC_PASSWORD',
+
+            // Discord
+            'DISCORD_BOT_TOKEN',
+
+            // PostgreSQL
+            'PG_HOSTNAME',
+            'PG_USERNAME',
+            'PG_PASSWORD',
+            'PG_DATABASE',
+            'PG_MAX_CONN',
+            'PG_IDLE_TIMEOUT',
+            'PG_CONN_TIMEOUT',
+
+            // Table Names
+            'TABLE_BEATMAPS',
+            'TABLE_POOLS',
+            'TABLE_TOURNAMENTS',
+
+            // Settings
+            'DEBUG_LOGGING'
+        ];
+        let missingEnv = 0;
+        for (const varName of requiredEnvVars) {
+            const value = process.env[varName];
+            if (!value || value.trim() === '') {
+                console.error(`Environment variable "${varName}" is missing or empty.`);
+                missingEnv++;
+            }
+        }
+        if (missingEnv > 0) {
+            process.exit(1);
+        }
+        console.log("Environment variables all set.");
+        console.log("Building Environment Object.");
+
+        // Build the dynamic env object from the schema
+        Environment.env = Object.keys(Environment.schema).reduce((acc, key) => {
+            const type = Environment.schema[key as keyof typeof Environment.schema];
+            const raw = process.env[key]!;
+            let value: any;
+
+            if (type === String) value = raw;
+            // else if (type === Number) value = Number(raw);
+            else if (type === Boolean) value = raw === "true";
+            else value = raw;
+
+            (acc as any)[key] = value;
+            return acc;
+        }, {} as EnvType);
+    }
+
+    static schema = {
+        OSU_API_CLIENT_ID: String,
+        OSU_API_CLIENT_SECRET: String,
+
+        IRC_USERNAME: String,
+        IRC_PASSWORD: String,
+
+        DISCORD_BOT_TOKEN: String,
+
+        PG_HOSTNAME: String,
+        PG_USERNAME: String,
+        PG_PASSWORD: String,
+        PG_DATABASE: String,
+        PG_MAX_CONN: String,
+        PG_IDLE_TIMEOUT: String,
+        PG_CONN_TIMEOUT: String,
+
+        TABLE_BEATMAPS: String,
+        TABLE_POOLS: String,
+        TABLE_TOURNAMENTS: String,
+
+        DEBUG_LOGGING: Boolean,
+    };
+}
+
+// Auto-generate a type from schema keys
+type Schema = typeof Environment.schema;
+
+type EnvType = {
+    [K in keyof Schema]: 
+        Schema[K] extends StringConstructor ? string :
+        // Schema[K] extends NumberConstructor ? number :
+        Schema[K] extends BooleanConstructor ? boolean :
+        any;
+};
