@@ -11,6 +11,7 @@
     "build:watch": "tsc --watch"
   },
   "dependencies": {
+    "bancho.js": "^0.12.3",
     "dotenv": "^17.2.3",
     "osu-api-v2-js": "^2.1.5",
     "pg": "^8.16.3",
