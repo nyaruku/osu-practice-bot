@@ -1,13 +1,5 @@
 FROM node:26-alpine
 
-# Install build dependencies for node-libcurl
-RUN apk add --no-cache \
-    python3 \
-    make \
-    g++ \
-    curl-dev \
-    libcurl
-
 # Set working directory
 WORKDIR /app
 
