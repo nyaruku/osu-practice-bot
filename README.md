@@ -1,10 +1,10 @@
 # osu-practice-bot
-## Setup
+*Basically a non-vibecoded RomAI clone in development*
+### Setup (Docker/Podman is recommended)
 - Create podman network<br/>
 `podman network create opb-network`
 
-- After editing .envs<br/>
-`podman-compose up -d`
+- Adapt .env files<br/>
 
-### How to apply changes into container 
-`podman-compose up -d --build container_name`
+- Run<br />
+`podman-compose up -d`
