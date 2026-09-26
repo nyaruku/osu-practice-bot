@@ -20,6 +20,7 @@
             "@Bootstrap/*": ["./src/Bootstrap/*"],
             "@Bots/*": ["./src/Bots/*"],
             "@Data/*": ["./src/Data/*"],
+            "@Import/*": ["./src/Import/*"],
             "@Service/*": ["./src/Service/*"],
             "@Task/*": ["./src/Task/*"],
             "@Test/*": ["./src/Test/*"]
