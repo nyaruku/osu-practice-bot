@@ -66,6 +66,7 @@ export class SchemaUpdater {
     static async initialize(): Promise<void> {
         const pool = new Pool({
             host: Environment.env.PG_HOSTNAME,
+            port: Environment.env.PG_PORT,
             user: Environment.env.PG_USERNAME,
             password: Environment.env.PG_PASSWORD,
             database: Environment.env.PG_DATABASE,
