@@ -29,6 +29,7 @@ export class Environment {
 
             // PostgreSQL
             'PG_HOSTNAME',
+            'PG_PORT',
             'PG_USERNAME',
             'PG_PASSWORD',
             'PG_DATABASE',
@@ -89,6 +90,7 @@ export class Environment {
         DISCORD_BOT_TOKEN: String,
 
         PG_HOSTNAME: String,
+        PG_PORT: Number,
         PG_USERNAME: String,
         PG_PASSWORD: String,
         PG_DATABASE: String,

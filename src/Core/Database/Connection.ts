@@ -3,6 +3,7 @@ import { Environment } from '@Bootstrap/Environment';
 
 export const DatabaseConfig: PoolConfig = {
     host: Environment.env.PG_HOSTNAME!,
+    port: Environment.env.PG_PORT!,
     user: Environment.env.PG_USERNAME!,
     password: Environment.env.PG_PASSWORD!,
     database: Environment.env.PG_DATABASE!,
