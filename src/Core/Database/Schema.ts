@@ -19,11 +19,28 @@ interface ForeignKey {
     constraintName: string;
 }
 
+interface CompositePrimaryKey {
+    table: string;
+    columns: string[];
+}
+
 export class Schema {
     static primaryKeys: PrimaryKey[] = [
         { table: Environment.env.TABLE_BEATMAPS!, column: 'id' },
         { table: Environment.env.TABLE_BEATMAPSETS!, column: 'id' },
         { table: Environment.env.TABLE_USERS!, column: 'id' },
+        { table: Environment.env.TABLE_TOURNAMENTS!, column: 'id' },
+    ];
+
+    static compositePrimaryKeys: CompositePrimaryKey[] = [
+        {
+            table: Environment.env.TABLE_POOLS!,
+            columns: [
+                'tournament_id',
+                'round',
+                'slot'
+            ]
+        }
     ];
 
     static foreignKeys: ForeignKey[] = [
@@ -35,11 +52,28 @@ export class Schema {
             onDelete: 'CASCADE',
             constraintName: 'fk_beatmapset_id',
         },
+        {
+            sourceTable: Environment.env.TABLE_POOLS!,
+            sourceColumn: 'tournament_id',
+            targetTable: Environment.env.TABLE_TOURNAMENTS!,
+            targetColumn: 'id',
+            onDelete: 'CASCADE',
+            constraintName: 'fk_pool_tournament_id',
+        },
+        {
+            sourceTable: Environment.env.TABLE_POOLS!,
+            sourceColumn: 'beatmap_id',
+            targetTable: Environment.env.TABLE_BEATMAPS!,
+            targetColumn: 'id',
+            onDelete: 'CASCADE',
+            constraintName: 'fk_pool_beatmap_id',
+        },
     ];
 
     static Indexes: string[] = [
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_BEATMAPS}_beatmapset_id ON public.${Environment.env.TABLE_BEATMAPS} (beatmapset_id);`,
-
+        `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_POOLS}_beatmap_id ON public.${Environment.env.TABLE_POOLS} (beatmap_id);`,
+        `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_POOLS}_tournament_id ON public.${Environment.env.TABLE_POOLS} (tournament_id);`,
         `CREATE EXTENSION IF NOT EXISTS pg_trgm;`,
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_BEATMAPSETS}_title_trgm ON public.${Environment.env.TABLE_BEATMAPSETS} USING gin (title gin_trgm_ops);`,
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_BEATMAPSETS}_artist_trgm ON public.${Environment.env.TABLE_BEATMAPSETS} USING gin (artist gin_trgm_ops);`,
@@ -90,6 +124,25 @@ export class Schema {
                 "osu_username" VARCHAR(30) NOT NULL
             );
             ALTER TABLE public.${Environment.env.TABLE_USERS} OWNER TO ${Environment.env.PG_USERNAME};
+        `,
+
+        tournaments: `
+            CREATE TABLE IF NOT EXISTS public.${Environment.env.TABLE_TOURNAMENTS} (
+                "id" BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+                "name" TEXT NOT NULL UNIQUE
+            );
+            ALTER TABLE public.${Environment.env.TABLE_TOURNAMENTS} OWNER TO ${Environment.env.PG_USERNAME};
+        `,
+
+        pools: `
+            CREATE TABLE IF NOT EXISTS public.${Environment.env.TABLE_POOLS} (
+                "tournament_id" BIGINT NOT NULL,
+                "round" TEXT NOT NULL,
+                "slot" TEXT NOT NULL,
+                "beatmap_id" BIGINT NOT NULL,
+                PRIMARY KEY ("tournament_id", "round", "slot")
+            );
+            ALTER TABLE public.${Environment.env.TABLE_POOLS} OWNER TO ${Environment.env.PG_USERNAME};
         `,
     };
 }
