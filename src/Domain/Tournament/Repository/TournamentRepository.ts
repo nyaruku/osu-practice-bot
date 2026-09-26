@@ -4,7 +4,7 @@ import { Environment } from '@Bootstrap/Environment';
 
 const pool = createPool();
 
-export class BeatmapsetRepository {
+export class TournamentRepository {
     static async insertTournament(tournament: Tournament): Promise<void> {
         await pool.query(`
             INSERT INTO public.${Environment.env.TABLE_TOURNAMENTS} (
