@@ -19,8 +19,10 @@
             "@Domain/*": ["./src/Domain/*"],
             "@Bootstrap/*": ["./src/Bootstrap/*"],
             "@Bots/*": ["./src/Bots/*"],
+            "@Data/*": ["./src/Data/*"],
             "@Service/*": ["./src/Service/*"],
-            "@Task/*": ["./src/Task/*"]
+            "@Task/*": ["./src/Task/*"],
+            "@Test/*": ["./src/Test/*"]
         }
     },
     "include": ["src/**/*"],

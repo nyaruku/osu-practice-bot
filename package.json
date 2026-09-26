@@ -6,6 +6,7 @@
     "build": "tsc",
     "start": "NODE_ENV=production node -r tsconfig-paths/register dist/Index.js",
     "dev": "NODE_ENV=development ts-node -r tsconfig-paths/register src/Index.ts",
+    "test": "NODE_ENV=development ts-node -r tsconfig-paths/register src/Test/TestRunner.ts",
     "clean": "rimraf dist",
     "typecheck": "tsc --noEmit",
     "build:watch": "tsc --watch"
