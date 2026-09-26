@@ -44,7 +44,10 @@ export class Environment {
             'TABLE_TOURNAMENTS',
 
             // Settings
-            'DEBUG_LOGGING'
+            'DEBUG_LOGGING',
+
+            // Webhook
+            'LOG_WEBHOOK'
         ];
         let missingEnv = 0;
         for (const varName of requiredEnvVars) {
@@ -100,6 +103,8 @@ export class Environment {
         TABLE_TOURNAMENTS: String,
 
         DEBUG_LOGGING: Boolean,
+
+        LOG_WEBHOOK: String,
     };
 }
 
