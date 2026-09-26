@@ -18,6 +18,7 @@
             "@Core/*": ["./src/Core/*"],
             "@Domain/*": ["./src/Domain/*"],
             "@Bootstrap/*": ["./src/Bootstrap/*"],
+            "@Bots/*": ["./src/Bots/*"],
             "@Service/*": ["./src/Service/*"],
             "@Task/*": ["./src/Task/*"]
         }
