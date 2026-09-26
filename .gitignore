@@ -9,3 +9,4 @@ dist
 /postgres/.env*
 !*.example
 /src/Data/maps.csv
+/src/Test
