@@ -41,7 +41,7 @@ export class Environment {
             'TABLE_BEATMAPS',
             'TABLE_BEATMAPSETS',
             'TABLE_POOLS',
-            'TALBE_USERS',
+            'TABLE_USERS',
             'TABLE_TOURNAMENTS',
 
             // Settings
