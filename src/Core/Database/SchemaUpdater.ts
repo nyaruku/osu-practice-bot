@@ -63,6 +63,33 @@ export class SchemaUpdater {
         }
     }
 
+    static async ensureCompositePrimaryKeys(client: PoolClient): Promise<void> {
+        for (const pk of Schema.compositePrimaryKeys) {
+            const constraintName = `${pk.table}_pkey`;
+
+            const exists = await client.query(
+                `
+                    SELECT 1
+                    FROM information_schema.table_constraints
+                    WHERE table_schema='public'
+                    AND table_name=$1
+                    AND constraint_name=$2
+                    AND constraint_type='PRIMARY KEY'
+                `,
+                [pk.table, constraintName]
+            );
+
+            if (exists.rowCount === 0) {
+                console.log(`Adding primary key on ${pk.table}(${pk.columns.join(', ')})`);
+
+                await client.query(`
+                    ALTER TABLE public.${pk.table}
+                    ADD CONSTRAINT ${constraintName} PRIMARY KEY (${pk.columns.join(', ')})
+                `);
+            }
+        }
+    }
+
     static async initialize(): Promise<void> {
         const pool = new Pool({
             host: Environment.env.PG_HOSTNAME,
@@ -118,6 +145,7 @@ export class SchemaUpdater {
             await this.ensurePrimaryKeys(client);
             await this.ensureForeignKeys(client);
             await this.ensureIndexes(client);
+            await this.ensureCompositePrimaryKeys(client);
             console.log('Database schema is fully up to date!');
         } catch (err) {
             console.error('Schema update failed:', err instanceof Error ? err.message : err);

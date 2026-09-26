@@ -28,7 +28,7 @@ export class SchemaInspector {
         const cols = createStmt[0]
             .split('\n')
             .map((l: string) => l.trim())
-            .filter((l: string) => l && !l.startsWith('CREATE TABLE') && !l.startsWith(')') && !l.startsWith('ALTER') && !l.startsWith('CONSTRAINT'))
+            .filter((l: string) => l && !l.startsWith('CREATE TABLE') && !l.startsWith(')') && !l.startsWith('ALTER') && !l.startsWith('CONSTRAINT') && !l.startsWith('PRIMARY KEY'))
             .map((l: string) => l.replace(/,$/, ''));
         const defs: Record<string, string> = {};
         for (const line of cols) {
