@@ -94,7 +94,9 @@ export class Environment {
         PG_CONN_TIMEOUT: String,
 
         TABLE_BEATMAPS: String,
+        TABLE_BEATMAPSETS: String,
         TABLE_POOLS: String,
+        TABLE_USERS: String,
         TABLE_TOURNAMENTS: String,
 
         DEBUG_LOGGING: Boolean,
