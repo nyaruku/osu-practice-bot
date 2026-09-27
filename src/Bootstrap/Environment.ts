@@ -46,6 +46,7 @@ export class Environment {
 
             // Settings
             'DEBUG_LOGGING',
+            'THIRD_PARTY_API',
 
             // Webhook
             'LOG_WEBHOOK'
@@ -105,6 +106,7 @@ export class Environment {
         TABLE_TOURNAMENTS: String,
 
         DEBUG_LOGGING: Boolean,
+        THIRD_PARTY_API: Boolean,
 
         LOG_WEBHOOK: String,
     };
