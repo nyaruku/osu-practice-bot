@@ -76,14 +76,11 @@ export class BeatmapController {
 
         try {
             const ids = await BeatmapRepository.getAllBeatmaps();
-
             for (let i = 0; i < ids.length; i += 50) {
                 const batchIds = ids.slice(i, i + 50);
-                
                 try {
                     const concurrencyLimit = 1;
                     const beatmaps = [];
-                    
                     if (Environment.env.THIRD_PARTY_API === true) {
                         for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
                             const chunk = batchIds.slice(j, j + concurrencyLimit);

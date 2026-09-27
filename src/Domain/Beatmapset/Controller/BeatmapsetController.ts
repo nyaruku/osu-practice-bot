@@ -1,30 +1,42 @@
 import chalk from 'chalk';
 import { OsuApiService } from "@Service/OsuApiService";
+import { NekohaApiService } from "@Service/NekohaApiService";
 import { BeatmapsetRepository } from "@Domain/Beatmapset/Repository/BeatmapsetRepository";
+import { Environment } from '@Bootstrap/Environment';
 
 export class BeatmapsetController {
     static async fetchBeatmapsetFromOsu(id: number): Promise<any> {
         let osuApiInstance = await OsuApiService.v2.getApiInstance();
 
         try {
-            const getBeatmapset = async () => {
-                try {
-                    return await osuApiInstance.getBeatmapset(id);
-                } catch (err: any) {
-                    if (err?.status_code === 404 || err?.message === 'Not Found' || (err instanceof Error && err.message.includes('Not Found'))) {
+            let getBeatmapset;
+            if (Environment.env.THIRD_PARTY_API === true) {
+                getBeatmapset = async () => {
+                    try {
+                        return await NekohaApiService.getBeatmapset(id);
+                    } catch (err: any) {
                         return null;
                     }
-                    if (err?.status_code === 429 || (err instanceof Error && err.message.includes('rate limit'))) {
-                        console.log(chalk.yellow(`Rate limit hit when fetching beatmapset ${id}, waiting 60 seconds...`));
-                        await new Promise(resolve => setTimeout(resolve, 60000));
+                };
+            } else {
+                getBeatmapset = async () => {
+                    try {
                         return await osuApiInstance.getBeatmapset(id);
+                    } catch (err: any) {
+                        if (err?.status_code === 404 || err?.message === 'Not Found' || (err instanceof Error && err.message.includes('Not Found'))) {
+                            return null;
+                        }
+                        if (err?.status_code === 429 || (err instanceof Error && err.message.includes('rate limit'))) {
+                            console.log(chalk.yellow(`Rate limit hit when fetching beatmapset ${id}, waiting 60 seconds...`));
+                            await new Promise(resolve => setTimeout(resolve, 60000));
+                            return await osuApiInstance.getBeatmapset(id);
+                        }
+                        throw err;
                     }
-                    throw err;
-                }
-            };
+                };
+            }
 
             const rawBeatmapset = await getBeatmapset() as any;
-
             if (!rawBeatmapset) {
                 const exists = await BeatmapsetRepository.beatmapsetExists(id);
                 if (exists) {
@@ -72,34 +84,41 @@ export class BeatmapsetController {
         try {
             // Get only beatmapsets worth re-checking (qualified, pending/wip, downloaded=false, or recently updated)
             const ids = await BeatmapsetRepository.getAllBeatmapsets();
-
             console.log(chalk.cyan(`Refreshing ${ids.length} beatmapsets from osu! API`));
 
-            // Process in batches of 50 (osu! API's maximum batch size)
             for (let i = 0; i < ids.length; i += 50) {
                 const batchIds = ids.slice(i, i + 50);
-                
                 try {
                     const concurrencyLimit = 1;
                     const beatmapsets = [];
-                    
-                    // Process in chunks
-                    for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
-                        const chunk = batchIds.slice(j, j + concurrencyLimit);
-                        const promises = chunk.map(id => 
-                            osuApiInstance.getBeatmapset(id)
-                                .catch((err: unknown) => {
+                    if (Environment.env.THIRD_PARTY_API === true) {
+                        for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
+                            const chunk = batchIds.slice(j, j + concurrencyLimit);
+                            const promises = chunk.map(id => 
+                                NekohaApiService.getBeatmapset(id).catch((err: unknown) => {
                                     console.warn(chalk.yellow(`Failed to fetch beatmapset ${id}:`), err instanceof Error ? err.message : err);
                                     return null;
                                 })
-                        );
-
-                        const results = await Promise.all(promises);
-                        beatmapsets.push(...results);
-                        
-                        await new Promise(resolve => setTimeout(resolve, 3000));
+                            );
+                            const results = await Promise.all(promises);
+                            beatmapsets.push(...results);
+                            await new Promise(resolve => setTimeout(resolve, 50));
+                        }
+                    } else {
+                        for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
+                            const chunk = batchIds.slice(j, j + concurrencyLimit);
+                            const promises = chunk.map(id => 
+                                osuApiInstance.getBeatmapset(id).catch((err: unknown) => {
+                                    console.warn(chalk.yellow(`Failed to fetch beatmapset ${id}:`), err instanceof Error ? err.message : err);
+                                    return null;
+                                })
+                            );
+                            const results = await Promise.all(promises);
+                            beatmapsets.push(...results);
+                            await new Promise(resolve => setTimeout(resolve, 3000));
+                        }
                     }
-                    
+
                     // Create a map of successfully retrieved beatmapsets
                     const beatmapsetMap = new Map(
                         beatmapsets
