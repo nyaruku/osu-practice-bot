@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 
 // Parse csv and return array
-export class DataProcessor {
+export class CsvTransformer {
     static parseCsv(csvPath: string): string[][] {
         const csvContent: String = readFileSync(csvPath, "utf-8");
         const rows: string[][] = [];
