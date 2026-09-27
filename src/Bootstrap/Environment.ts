@@ -20,6 +20,8 @@ export class Environment {
             'OSU_API_CLIENT_ID',
             'OSU_API_CLIENT_SECRET',
 
+            'OSU_API_KEY',
+
             // IRC
             'IRC_USERNAME',
             'IRC_PASSWORD',
@@ -84,6 +86,8 @@ export class Environment {
     static schema = {
         OSU_API_CLIENT_ID: String,
         OSU_API_CLIENT_SECRET: String,
+
+        OSU_API_KEY: String,
 
         IRC_USERNAME: String,
         IRC_PASSWORD: String,
