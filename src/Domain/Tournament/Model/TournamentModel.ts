@@ -6,6 +6,6 @@
 ===========================
 */
 export interface Tournament {
-    id: bigint;
+    id?: bigint;
     name: string;
 }

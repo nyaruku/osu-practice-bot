@@ -1,5 +1,5 @@
 import { createPool } from '@Core/Database/Connection';
-import { Beatmap } from '@Domain/Beatmap/Model/BeatmapModel';
+import { Beatmap, BeatmapImport } from '@Domain/Beatmap/Model/BeatmapModel';
 import { Environment } from '@Bootstrap/Environment';
 
 const pool = createPool();
@@ -60,6 +60,29 @@ export class BeatmapRepository {
             beatmap.total_length,
             beatmap.version
         ]);
+    }
+
+    // Batch insert used by Import
+    static async insertBeatmaps(beatmaps: BeatmapImport[]): Promise<void> {
+        if (beatmaps.length === 0) {
+            return;
+        }
+
+        const values: string[] = [];
+        const parameters: string[] = [];
+
+        beatmaps.forEach((beatmap, i) => {
+            values.push(`($${i + 1})`);
+            parameters.push(beatmap.id.toString());
+        });
+
+        await pool.query(`
+            INSERT INTO public.${Environment.env.TABLE_BEATMAPS} (
+                id
+            ) VALUES
+                ${values.join(',\n')}
+            ON CONFLICT (id) DO NOTHING
+        `, parameters);
     }
 
     static async beatmapExists(id: number): Promise<boolean> {

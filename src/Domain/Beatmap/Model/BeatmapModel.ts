@@ -22,3 +22,7 @@ export interface Beatmap {
     total_length: bigint | null;
     hit_length: bigint | null;
 }
+
+export interface BeatmapImport {
+    id: bigint;
+}

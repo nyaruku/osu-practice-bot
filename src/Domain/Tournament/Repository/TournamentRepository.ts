@@ -50,4 +50,14 @@ export class TournamentRepository {
         return res.rows.map(r => String(r.name));
     }
 
+    static async getAllTournamentIds(): Promise<Map<string, bigint>> {
+        const res = await pool.query(`
+            SELECT id, name FROM public.${Environment.env.TABLE_TOURNAMENTS}
+        `);
+        const tournamentIds = new Map<string, bigint>();
+        res.rows.forEach(row => {
+            tournamentIds.set(row.name, BigInt(row.id));
+        });
+        return tournamentIds;
+    }
 }
