@@ -1,8 +1,7 @@
-// Require the necessary discord.js classes
 import { Client, Events, GatewayIntentBits } from 'discord.js';
 import { Environment } from '@Bootstrap/Environment';
 
-export class Bot {
+export class Discord {
     private static readonly client = new Client({
         intents: [
             GatewayIntentBits.Guilds,
@@ -13,11 +12,11 @@ export class Bot {
     });
     
     static async run(): Promise<void> {
-        Bot.client.once(Events.ClientReady, (readyClient) => {
+        Discord.client.once(Events.ClientReady, (readyClient) => {
             console.log(`Ready! Logged in as ${readyClient.user.tag}`);
         });
         
         console.log(`Starting Discord Bot...`);
-        await Bot.client.login(Environment.env.DISCORD_BOT_TOKEN);
+        await Discord.client.login(Environment.env.DISCORD_BOT_TOKEN);
     }
 }
