@@ -14,17 +14,18 @@
         "resolveJsonModule": true,
         "sourceMap": true,
         "declaration": true,
+        "baseUrl": "./src",
         "paths": {
-            "@Core/*": ["./src/Core/*"],
-            "@Domain/*": ["./src/Domain/*"],
-            "@Bootstrap/*": ["./src/Bootstrap/*"],
-            "@Bots/*": ["./src/Bots/*"],
-            "@Data/*": ["./src/Data/*"],
-            "@Import/*": ["./src/Import/*"],
-            "@Export/*": ["./src/Export/*"],
-            "@Service/*": ["./src/Service/*"],
-            "@Task/*": ["./src/Task/*"],
-            "@Test/*": ["./src/Test/*"]
+            "@Core/*": ["Core/*"],
+            "@Domain/*": ["Domain/*"],
+            "@Bootstrap/*": ["Bootstrap/*"],
+            "@Bots/*": ["Bots/*"],
+            "@Data/*": ["Data/*"],
+            "@Import/*": ["Import/*"],
+            "@Export/*": ["Export/*"],
+            "@Service/*": ["Service/*"],
+            "@Task/*": ["Task/*"],
+            "@Test/*": ["Test/*"]
         }
     },
     "include": ["src/**/*"],
