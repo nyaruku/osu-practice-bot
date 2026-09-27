@@ -45,14 +45,6 @@ export class Schema {
 
     static foreignKeys: ForeignKey[] = [
         {
-            sourceTable: Environment.env.TABLE_BEATMAPS!,
-            sourceColumn: 'beatmapset_id',
-            targetTable: Environment.env.TABLE_BEATMAPSETS!,
-            targetColumn: 'id',
-            onDelete: 'CASCADE',
-            constraintName: 'fk_beatmapset_id',
-        },
-        {
             sourceTable: Environment.env.TABLE_POOLS!,
             sourceColumn: 'tournament_id',
             targetTable: Environment.env.TABLE_TOURNAMENTS!,
