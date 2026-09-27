@@ -79,9 +79,10 @@ export class BeatmapController {
             for (let i = 0; i < ids.length; i += 50) {
                 const batchIds = ids.slice(i, i + 50);
                 try {
-                    const concurrencyLimit = 1;
+                    let concurrencyLimit = 1;
                     const beatmaps = [];
                     if (Environment.env.THIRD_PARTY_API === true) {
+                        concurrencyLimit = 10;
                         for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
                             const chunk = batchIds.slice(j, j + concurrencyLimit);
                             const promises = chunk.map(id => 
@@ -92,7 +93,7 @@ export class BeatmapController {
                             );
                             const results = await Promise.all(promises);
                             beatmaps.push(...results);
-                            await new Promise(resolve => setTimeout(resolve, 50));
+                            await new Promise(resolve => setTimeout(resolve, 5));
                         }
                     } else {
                         for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
