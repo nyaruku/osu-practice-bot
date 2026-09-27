@@ -1,5 +1,7 @@
 export class NekohaApiService {
-    private static readonly baseUrl = "https://mirror.nekoha.moe";
+    // Use this baseUrl if u fork
+    // private static readonly baseUrl = "https://mirror.nekoha.moe";
+    private static readonly baseUrl = "http://mirror-server:30727";
 
     // We probably can avoid calling official osu! Api
 

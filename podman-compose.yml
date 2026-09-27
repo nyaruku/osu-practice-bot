@@ -31,9 +31,14 @@ services:
       - ./src/.env.production
     networks:
       - opb-network
+      # You should probably remove this if u fork
+      - mirror-network
     security_opt:
-      - label=disable
+    - label=disable
 
 networks:
   opb-network:
+    name: opb-network
+  # You should probably remove this if u fork
+  mirror-network:
     external: true
