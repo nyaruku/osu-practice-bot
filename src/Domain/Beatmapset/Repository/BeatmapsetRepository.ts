@@ -59,12 +59,13 @@ export class BeatmapsetRepository {
         return res.rows[0] ?? null;
     }
 
+    // Taken from beatmap table
     static async getAllBeatmapsets(): Promise<number[]> {
         const res = await pool.query(
-            `SELECT id FROM public.${Environment.env.TABLE_BEATMAPSETS} ORDER BY id ASC`
+            `SELECT DISTINCT beatmapset_id FROM public.${Environment.env.TABLE_BEATMAPS} ORDER BY beatmapset_id ASC`
         );
         // return as number
-        return res.rows.map(r => Number(r.id));
+        return res.rows.map(r => Number(r.beatmapset_id));
     }
 
 }
