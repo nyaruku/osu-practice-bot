@@ -2,6 +2,7 @@ import { Client, Events, GatewayIntentBits } from 'discord.js';
 import { Environment } from '@Bootstrap/Environment';
 import { CommandRegister } from '@Bots/Discord/CommandRegister';
 import { CommandHandler } from '@Bots/Discord/CommandHandler';
+import { registerCommands } from '@Bots/Discord/Commands';
 
 export class Discord {
     private static readonly client = new Client({
@@ -14,6 +15,7 @@ export class Discord {
     });
 
     static async run(): Promise<void> {
+        registerCommands();
         Discord.client.once(Events.ClientReady, async (readyClient) => {
             console.log(`Ready! Logged in as ${readyClient.user.tag}`);
             await readyClient.application.commands.set(
