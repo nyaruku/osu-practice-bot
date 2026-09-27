@@ -1,6 +1,5 @@
 import fs from 'fs';
 import { Environment } from '@Bootstrap/Environment';
-import { createPool } from '@Core/Database/Connection';
 
 function escapeCsv(value: string): string {
     if (value.includes('"') || value.includes(',') || value.includes('\n')) {
@@ -11,6 +10,8 @@ function escapeCsv(value: string): string {
 
 async function main(): Promise<void> {
     await Environment.initialize();
+
+    const { createPool } = await import('@Core/Database/Connection');
 
     const pool = createPool();
     const result = await pool.query(`
