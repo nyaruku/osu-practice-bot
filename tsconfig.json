@@ -21,6 +21,7 @@
             "@Bots/*": ["./src/Bots/*"],
             "@Data/*": ["./src/Data/*"],
             "@Import/*": ["./src/Import/*"],
+            "@Export/*": ["./src/Export/*"],
             "@Service/*": ["./src/Service/*"],
             "@Task/*": ["./src/Task/*"],
             "@Test/*": ["./src/Test/*"]
