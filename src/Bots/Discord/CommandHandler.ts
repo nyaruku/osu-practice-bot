@@ -3,7 +3,7 @@ import { CommandRegister } from '@Bots/Discord/CommandRegister';
 
 export class CommandHandler {
     static async handle(interaction: ChatInputCommandInteraction): Promise<void> {
-        const command = CommandRegister.all().find((cmd) => cmd.data.name === interaction.commandName);
+        const command = CommandRegister.get(interaction.commandName);
         if (!command) {
             return;
         }

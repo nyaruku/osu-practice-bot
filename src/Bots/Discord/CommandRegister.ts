@@ -1,11 +1,7 @@
-import { Command } from '@Bots/Discord/Command';
+import { Ping } from '@Bots/Discord/Commands/Ping';
 
-export class CommandRegister {
-    private static readonly commands: Command[] = [];
-    static register(command: Command): void {
-        CommandRegister.commands.push(command);
-    }
-    static all(): readonly Command[] {
-        return CommandRegister.commands;
-    }
-}
+const commands = [
+    Ping
+];
+
+export const CommandRegister = new Map(commands.map((cmd) => [cmd.data.name, cmd]));
