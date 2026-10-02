@@ -1,0 +1,1 @@
+export { OnPrivateMessage } from '@Bots/Irc/Events/PrivateMessage';

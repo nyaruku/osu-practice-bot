@@ -1,5 +1,6 @@
-import { Environment } from '@Bootstrap/Environment';
 import { BanchoClient } from 'bancho.js';
+import { Environment } from '@Bootstrap/Environment';
+import * as EventRegister from '@Bots/Irc/EventRegister';
 
 export class Irc {
     private static readonly client = new BanchoClient({
@@ -10,7 +11,9 @@ export class Irc {
     static async run(): Promise<void> {
         Irc.client.connect().then(() => {
             console.log("Connected to Bancho IRC");
-            Irc.client.on("PM", (message) => console.log(`${message.user.ircUsername}: ${message.message}`));
+
+            // Event Listeners
+            Irc.client.on("PM", (message) => EventRegister.OnPrivateMessage(message));
         }).catch(console.error);
     }
 }
