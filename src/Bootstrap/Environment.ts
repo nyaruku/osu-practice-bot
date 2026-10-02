@@ -26,6 +26,8 @@ export class Environment {
             'IRC_USERNAME',
             'IRC_PASSWORD',
 
+            'BOT_PREFIX',
+
             // Discord
             'DISCORD_BOT_TOKEN',
 
@@ -91,6 +93,8 @@ export class Environment {
 
         IRC_USERNAME: String,
         IRC_PASSWORD: String,
+
+        BOT_PREFIX: String,
 
         DISCORD_BOT_TOKEN: String,
 

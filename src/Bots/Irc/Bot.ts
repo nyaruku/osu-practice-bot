@@ -2,8 +2,6 @@ import { Environment } from '@Bootstrap/Environment';
 import { BanchoClient } from 'bancho.js';
 
 export class Irc {
-    private static BOT_PREFIX= ".";
-
     private static readonly client = new BanchoClient({
         username: Environment.env.IRC_USERNAME,
         password: Environment.env.IRC_PASSWORD,
