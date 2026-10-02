@@ -10,7 +10,7 @@ export async function OnPrivateMessage(message: PrivateMessage) {
 
     const cmd = PrivateCommandRegister.get(args[0]);
     if (!cmd) {
-        message.user.sendMessage(`Command (${args[0]} not found...`);
+        message.user.sendMessage(`Command ${args[0]} not found...`);
         return;
     }
 
