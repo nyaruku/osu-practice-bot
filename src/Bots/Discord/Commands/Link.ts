@@ -13,17 +13,18 @@ export const Link = {
         const code = LinkCodeService.create(discordId);
 
         const command = `${Environment.env.BOT_PREFIX}verify ${code}`;
-        const expiry = `The code expires in ${LinkCodeService.ttlMinutes} minutes.`;
 
         if (existing) {
             await interaction.reply({
-                content: `You are already linked to ${inlineCode(existing.osu_username)}\n` +
-                         `To link a different account, send ${command} to ${inlineCode(Environment.env.IRC_USERNAME)} in osu!. ${expiry}`,
+                content: `You are already linked to ${inlineCode(existing.osu_username)}\n` + 
+                `To link a different account, send: ${inlineCode(command)} to ${inlineCode(Environment.env.IRC_USERNAME)} in osu!.\n` +
+                `The code expires in ${LinkCodeService.ttlMinutes} minutes.`,
                 flags: MessageFlags.Ephemeral,
             });
         } else {
             await interaction.reply({
-                content: `Send ${command} to ${Environment.env.IRC_USERNAME} in osu! to link your account. ${expiry}`,
+                content: `Send ${command} to ${Environment.env.IRC_USERNAME} in osu! to link your account.\n` + 
+                `The code expires in ${LinkCodeService.ttlMinutes} minutes.`,
                 flags: MessageFlags.Ephemeral,
             });
         }
