@@ -7,7 +7,12 @@ export class Irc {
         username: Environment.env.IRC_USERNAME,
         password: Environment.env.IRC_PASSWORD,
         apiKey: Environment.env.OSU_API_KEY,
-    });    
+    });
+
+    static isConnected(): boolean {
+        return Irc.client.isConnected();
+    }
+
     static async run(): Promise<void> {
         Irc.client.connect().then(() => {
             console.log("Connected to Bancho IRC");
