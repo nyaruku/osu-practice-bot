@@ -5,6 +5,3 @@
 `podman network create opb-network`
 
 - Adapt .env files<br/>
-
-- Run<br />
-`podman-compose up -d`
