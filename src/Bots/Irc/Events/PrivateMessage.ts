@@ -8,11 +8,14 @@ export async function OnPrivateMessage(message: PrivateMessage) {
 
     let args = message.content.slice(1).split(/\s+/);
 
-    const cmd = PrivateCommandRegister.get(args[0]);
+    const cmd = PrivateCommandRegister.get(args[0].toLowerCase());
     if (!cmd) {
         message.user.sendMessage(`Command ${args[0]} not found...`);
         return;
     }
 
-    cmd(message, args.slice(1));
+    cmd(message, args.slice(1)).catch((err) => {
+        console.error(`IRC command "${args[0]}" failed:`, err instanceof Error ? err.message : err);
+        message.user.sendMessage("Something went wrong running that command.").catch(() => {});
+    });
 }

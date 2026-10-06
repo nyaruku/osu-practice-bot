@@ -16,12 +16,49 @@ export class UserRepository {
             )
             ON CONFLICT (id) DO UPDATE SET
                 osu_id = EXCLUDED.osu_id,
-                username = EXCLUDED.osu_username
+                osu_username = EXCLUDED.osu_username
         `, [
             user.id,
             user.osu_id,
             user.osu_username
         ]);
+    }
+
+    /**
+     * Links a discord account to an osu! account.
+     * Any other discord account previously linked to the same osu! account is unlinked.
+     */
+    static async linkUser(user: User): Promise<void> {
+        const client = await pool.connect();
+        try {
+            await client.query('BEGIN');
+            await client.query(
+                `DELETE FROM public.${Environment.env.TABLE_USERS} WHERE osu_id = $1 AND id <> $2`,
+                [user.osu_id, user.id]
+            );
+            await client.query(`
+                INSERT INTO public.${Environment.env.TABLE_USERS} (
+                    id,
+                    osu_id,
+                    osu_username
+                ) VALUES (
+                    $1,$2,$3
+                )
+                ON CONFLICT (id) DO UPDATE SET
+                    osu_id = EXCLUDED.osu_id,
+                    osu_username = EXCLUDED.osu_username
+            `, [
+                user.id,
+                user.osu_id,
+                user.osu_username
+            ]);
+            await client.query('COMMIT');
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
+        } finally {
+            client.release();
+        }
     }
 
     static async userExists(id: number): Promise<boolean> {

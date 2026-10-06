@@ -66,6 +66,7 @@ export class Schema {
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_BEATMAPS}_beatmapset_id ON public.${Environment.env.TABLE_BEATMAPS} (beatmapset_id);`,
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_POOLS}_beatmap_id ON public.${Environment.env.TABLE_POOLS} (beatmap_id);`,
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_POOLS}_tournament_id ON public.${Environment.env.TABLE_POOLS} (tournament_id);`,
+        `CREATE UNIQUE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_USERS}_osu_id ON public.${Environment.env.TABLE_USERS} (osu_id);`,
         `CREATE EXTENSION IF NOT EXISTS pg_trgm;`,
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_BEATMAPSETS}_title_trgm ON public.${Environment.env.TABLE_BEATMAPSETS} USING gin (title gin_trgm_ops);`,
         `CREATE INDEX IF NOT EXISTS idx_${Environment.env.TABLE_BEATMAPSETS}_artist_trgm ON public.${Environment.env.TABLE_BEATMAPSETS} USING gin (artist gin_trgm_ops);`,

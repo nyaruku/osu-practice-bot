@@ -8,10 +8,12 @@ async function main(): Promise<void> {
     const { Discord } = await import('@Bots/Discord/Bot');
     const { Irc } = await import('@Bots/Irc/Bot');
     const { TaskRunner } = await import('@Task/TaskRunner');
+    const { UserController } = await import('@Domain/User/Controller/UserController');
 
     Logger.hookConsole();
     console.log(`[ osu-practice-bot ]`);
     await SchemaUpdater.initialize();
+    await UserController.linkOwner();
     await Discord.run();
     await Irc.run();
     TaskRunner.run();

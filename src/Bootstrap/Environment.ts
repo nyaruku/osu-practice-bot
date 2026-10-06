@@ -117,6 +117,9 @@ export class Environment {
         THIRD_PARTY_API: Boolean,
 
         LOG_WEBHOOK: String,
+
+        OWNER_DISCORD_ID: String,
+        OWNER_OSU_ID: String,
     };
 }
 
