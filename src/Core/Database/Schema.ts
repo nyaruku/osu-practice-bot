@@ -133,6 +133,7 @@ export class Schema {
                 "round" TEXT NOT NULL,
                 "slot" TEXT NOT NULL,
                 "beatmap_id" BIGINT NOT NULL,
+                "elo" REAL NULL DEFAULT NULL,
                 PRIMARY KEY ("tournament_id", "round", "slot")
             );
             ALTER TABLE public.${Environment.env.TABLE_POOLS} OWNER TO ${Environment.env.PG_USERNAME};

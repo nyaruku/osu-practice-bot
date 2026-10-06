@@ -1,6 +1,7 @@
 import chalk from 'chalk';
 import { BeatmapUpdater } from '@Task/Controller/BeatmapUpdater';
 import { OsuAuthenticator } from '@Task/Controller/OsuAuthenticator';
+import { PoolEloUpdater } from '@Task/Controller/PoolEloUpdater';
 
 export class TaskRunner {
     static async sleep(ms: number): Promise<void> {
@@ -15,6 +16,7 @@ export class TaskRunner {
             await this.sleep(15000);
 
             BeatmapUpdater.run(1, 30);
+            PoolEloUpdater.run(60, 5);
         } catch (err) {
             console.error(chalk.red("TaskRunner encountered an error:"), err instanceof Error ? err.message : err);
             process.exit(1);

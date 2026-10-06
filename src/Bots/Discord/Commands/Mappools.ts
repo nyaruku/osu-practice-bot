@@ -6,8 +6,17 @@ const PAGE_SIZE = 15;
 const BUTTON_TIMEOUT_MS = 5 * 60 * 1000;
 
 async function renderPage(page: number, totalPages: number, sort: PoolSort, order: SortOrder) {
-    const pools = await PoolRepository.getPoolSummaries(PAGE_SIZE, page * PAGE_SIZE, sort, order);
-    const list = pools.map((p, i) => `${page * PAGE_SIZE + i + 1}. ${p.tournament} - ${p.round} (${p.maps} maps)`).join('\n');
+    const offset = page * PAGE_SIZE;
+    const pools = await PoolRepository.getPoolSummaries(PAGE_SIZE, offset, sort, order);
+
+    const lines: string[] = [];
+    pools.forEach((pool, i) => {
+        let elo = '?';
+        if (pool.elo !== null) {
+            elo = Math.round(pool.elo).toString();
+        }
+        lines.push(`${offset + i + 1}. ${pool.tournament} - ${pool.round} (${pool.maps} maps, ${elo} ELO)`);
+    });
 
     const buttons = new ActionRowBuilder<ButtonBuilder>().addComponents(
         new ButtonBuilder()
@@ -24,7 +33,7 @@ async function renderPage(page: number, totalPages: number, sort: PoolSort, orde
 
     return {
         content: '```ps\n' +
-            `${list}\n` +
+            `${lines.join('\n')}\n` +
             '```' +
             `Page ${page + 1} / ${totalPages}`,
         components: [buttons],
@@ -39,11 +48,21 @@ async function list(interaction: ChatInputCommandInteraction) {
     }
 
     const totalPages = Math.ceil(total / PAGE_SIZE);
-    let page = Math.min(Math.max((interaction.options.getInteger('page') ?? 1) - 1, 0), totalPages - 1);
     const sort = (interaction.options.getString('sort') ?? 'name') as PoolSort;
     const order = (interaction.options.getString('order') ?? 'asc') as SortOrder;
 
-    const response = await interaction.reply({ ...(await renderPage(page, totalPages, sort, order)), withResponse: true });
+    // Pages are 1-based for the user, 0-based here
+    let page = (interaction.options.getInteger('page') ?? 1) - 1;
+    if (page > totalPages - 1) {
+        page = totalPages - 1;
+    }
+
+    const firstPage = await renderPage(page, totalPages, sort, order);
+    const response = await interaction.reply({
+        content: firstPage.content,
+        components: firstPage.components,
+        withResponse: true,
+    });
 
     const collector = response.resource!.message!.createMessageComponentCollector({
         componentType: ComponentType.Button,
@@ -52,8 +71,14 @@ async function list(interaction: ChatInputCommandInteraction) {
     });
 
     collector.on('collect', async (button) => {
-        page += button.customId === 'next' ? 1 : -1;
-        await button.update(await renderPage(page, totalPages, sort, order));
+        if (button.customId === 'next') {
+            page++;
+        } else {
+            page--;
+        }
+
+        const newPage = await renderPage(page, totalPages, sort, order);
+        await button.update(newPage);
     });
 
     // Remove buttons once they stop working
@@ -77,6 +102,7 @@ export const Mappools = {
                         .addChoices(
                             { name: 'Name', value: 'name' },
                             { name: 'Pool size', value: 'size' },
+                            { name: 'ELO', value: 'elo' },
                         )
                 )
                 .addStringOption((option) =>
