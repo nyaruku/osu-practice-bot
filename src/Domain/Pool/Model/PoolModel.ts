@@ -11,3 +11,12 @@ export interface Pool {
     slot: string;
     beatmap_id: bigint;
 }
+
+export interface PoolSummary {
+    tournament: string;
+    round: string;
+    maps: number;
+}
+
+export type PoolSort = 'name' | 'size';
+export type SortOrder = 'asc' | 'desc';

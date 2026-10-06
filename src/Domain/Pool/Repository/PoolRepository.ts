@@ -1,5 +1,5 @@
 import { createPool } from '@Core/Database/Connection';
-import { Pool } from '@Domain/Pool/Model/PoolModel';
+import { Pool, PoolSummary, PoolSort, SortOrder } from '@Domain/Pool/Model/PoolModel';
 import { Environment } from '@Bootstrap/Environment';
 
 const pool = createPool();
@@ -57,5 +57,33 @@ export class PoolRepository {
             ON CONFLICT (tournament_id, round, slot) DO UPDATE SET
                 beatmap_id = EXCLUDED.beatmap_id
         `, parameters);
+    }
+
+    static async getPoolSummaries(limit: number, offset: number, sort: PoolSort, order: SortOrder): Promise<PoolSummary[]> {
+        const direction = order === 'desc' ? 'DESC' : 'ASC';
+        const orderBy = sort === 'size'
+            ? `maps ${direction}, t.name ASC, p.round ASC`
+            : `t.name ${direction}, p.round ${direction}`;
+
+        const res = await pool.query(`
+            SELECT t.name AS tournament, p.round, COUNT(*) AS maps
+            FROM public.${Environment.env.TABLE_POOLS} p
+            JOIN public.${Environment.env.TABLE_TOURNAMENTS} t ON t.id = p.tournament_id
+            GROUP BY t.name, p.round
+            ORDER BY ${orderBy}
+            LIMIT $1 OFFSET $2
+        `, [limit, offset]);
+        return res.rows.map(r => ({
+            tournament: r.tournament,
+            round: r.round,
+            maps: Number(r.maps),
+        }));
+    }
+
+    static async countPools(): Promise<number> {
+        const res = await pool.query(`
+            SELECT COUNT(DISTINCT (tournament_id, round)) AS count FROM public.${Environment.env.TABLE_POOLS}
+        `);
+        return Number(res.rows[0].count);
     }
 }
