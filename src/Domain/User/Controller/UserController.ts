@@ -1,3 +1,4 @@
+import chalk from 'chalk';
 import { OsuApiService } from '@Service/OsuApiService';
 import { UserRepository } from '@Domain/User/Repository/UserRepository';
 import { Environment } from '@Bootstrap/Environment';
@@ -23,9 +24,9 @@ export class UserController {
                 osu_id: BigInt(osuId),
                 osu_username: osuUser.username,
             });
-            console.log(`Linked owner discord ${discordId} to osu! ${osuUser.username} (${osuId})`);
+            console.log(chalk.green(`Linked owner discord ${discordId} to osu! ${osuUser.username} (${osuId})`));
         } catch (err) {
-            console.error('Failed to link owner account:', err instanceof Error ? err.message : err);
+            console.error(chalk.red("Failed to link owner account:"), err instanceof Error ? err.message : err);
         }
     }
 }

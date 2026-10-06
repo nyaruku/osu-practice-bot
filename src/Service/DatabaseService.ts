@@ -17,14 +17,13 @@ export class DatabaseService {
     }
 
     public static async getCounts(): Promise<Record<string, number>> {
-        const env = Environment.env;
         const res = await pool.query(`
             SELECT
-                (SELECT COUNT(*) FROM public.${env.TABLE_BEATMAPS}) AS beatmaps,
-                (SELECT COUNT(*) FROM public.${env.TABLE_BEATMAPSETS}) AS beatmapsets,
-                (SELECT COUNT(*) FROM public.${env.TABLE_TOURNAMENTS}) AS tournaments,
-                (SELECT COUNT(DISTINCT (tournament_id, round)) FROM public.${env.TABLE_POOLS}) AS pools,
-                (SELECT COUNT(*) FROM public.${env.TABLE_USERS}) AS users
+                (SELECT COUNT(*) FROM public.${Environment.env.TABLE_BEATMAPS}) AS beatmaps,
+                (SELECT COUNT(*) FROM public.${Environment.env.TABLE_BEATMAPSETS}) AS beatmapsets,
+                (SELECT COUNT(*) FROM public.${Environment.env.TABLE_TOURNAMENTS}) AS tournaments,
+                (SELECT COUNT(DISTINCT (tournament_id, round)) FROM public.${Environment.env.TABLE_POOLS}) AS pools,
+                (SELECT COUNT(*) FROM public.${Environment.env.TABLE_USERS}) AS users
         `);
         const row = res.rows[0];
         return {
