@@ -120,6 +120,8 @@ export class Environment {
 
         OWNER_DISCORD_ID: String,
         OWNER_OSU_ID: String,
+
+        DEV_GUILD_ID: String,
     };
 }
 
