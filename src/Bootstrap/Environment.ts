@@ -55,6 +55,18 @@ export class Environment {
             // Webhook
             'LOG_WEBHOOK'
         ];
+        // mirror db is optional, only check it when turned on
+        if (process.env.MIRROR_DATABASE === 'true') {
+            requiredEnvVars.push(
+                'MIRROR_PG_HOSTNAME',
+                'MIRROR_PG_PORT',
+                'MIRROR_PG_USERNAME',
+                'MIRROR_PG_PASSWORD',
+                'MIRROR_PG_DATABASE',
+                'MIRROR_TABLE_BEATMAPS',
+                'MIRROR_TABLE_BEATMAPSETS'
+            );
+        }
         let missingEnv = 0;
         for (const varName of requiredEnvVars) {
             const value = process.env[varName];
@@ -115,6 +127,15 @@ export class Environment {
 
         DEBUG_LOGGING: Boolean,
         THIRD_PARTY_API: Boolean,
+
+        MIRROR_DATABASE: Boolean,
+        MIRROR_PG_HOSTNAME: String,
+        MIRROR_PG_PORT: Number,
+        MIRROR_PG_USERNAME: String,
+        MIRROR_PG_PASSWORD: String,
+        MIRROR_PG_DATABASE: String,
+        MIRROR_TABLE_BEATMAPS: String,
+        MIRROR_TABLE_BEATMAPSETS: String,
 
         LOG_WEBHOOK: String,
 

@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { OsuApiService } from "@Service/OsuApiService";
 import { NekohaApiService } from "@Service/NekohaApiService";
 import { BeatmapRepository } from "@Domain/Beatmap/Repository/BeatmapRepository";
+import { MirrorBeatmapRepository } from "@Domain/Beatmap/Repository/MirrorBeatmapRepository";
 import { Environment } from '@Bootstrap/Environment';
 
 export class BeatmapController {
@@ -10,7 +11,11 @@ export class BeatmapController {
 
         try {
             let getBeatmap;
-            if (Environment.env.THIRD_PARTY_API === true) {
+            if (Environment.env.MIRROR_DATABASE === true) {
+                getBeatmap = async () => {
+                    return await MirrorBeatmapRepository.getById(id);
+                };
+            } else if (Environment.env.THIRD_PARTY_API === true) {
                 getBeatmap = async () => {
                     try {
                         return await NekohaApiService.getBeatmap(id);
@@ -81,7 +86,10 @@ export class BeatmapController {
                 try {
                     let concurrencyLimit = 1;
                     const beatmaps = [];
-                    if (Environment.env.THIRD_PARTY_API === true) {
+                    if (Environment.env.MIRROR_DATABASE === true) {
+                        const rows = await MirrorBeatmapRepository.getByIds(batchIds);
+                        beatmaps.push(...rows);
+                    } else if (Environment.env.THIRD_PARTY_API === true) {
                         concurrencyLimit = 10;
                         for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
                             const chunk = batchIds.slice(j, j + concurrencyLimit);

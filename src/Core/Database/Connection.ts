@@ -15,3 +15,18 @@ export const DatabaseConfig: PoolConfig = {
 export function createPool() {
     return new Pool(DatabaseConfig);
 }
+
+export const MirrorDatabaseConfig: PoolConfig = {
+    host: Environment.env.MIRROR_PG_HOSTNAME!,
+    port: Environment.env.MIRROR_PG_PORT!,
+    user: Environment.env.MIRROR_PG_USERNAME!,
+    password: Environment.env.MIRROR_PG_PASSWORD!,
+    database: Environment.env.MIRROR_PG_DATABASE!,
+    max: parseInt(Environment.env.PG_MAX_CONN!) || 20,
+    idleTimeoutMillis: parseInt(Environment.env.PG_IDLE_TIMEOUT!) || 0,
+    connectionTimeoutMillis: parseInt(Environment.env.PG_CONN_TIMEOUT!) || 0,
+};
+
+export function createMirrorPool() {
+    return new Pool(MirrorDatabaseConfig);
+}

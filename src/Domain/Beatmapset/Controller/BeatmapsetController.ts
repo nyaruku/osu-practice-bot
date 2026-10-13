@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { OsuApiService } from "@Service/OsuApiService";
 import { NekohaApiService } from "@Service/NekohaApiService";
 import { BeatmapsetRepository } from "@Domain/Beatmapset/Repository/BeatmapsetRepository";
+import { MirrorBeatmapsetRepository } from "@Domain/Beatmapset/Repository/MirrorBeatmapsetRepository";
 import { Environment } from '@Bootstrap/Environment';
 
 export class BeatmapsetController {
@@ -10,7 +11,11 @@ export class BeatmapsetController {
 
         try {
             let getBeatmapset;
-            if (Environment.env.THIRD_PARTY_API === true) {
+            if (Environment.env.MIRROR_DATABASE === true) {
+                getBeatmapset = async () => {
+                    return await MirrorBeatmapsetRepository.getById(id);
+                };
+            } else if (Environment.env.THIRD_PARTY_API === true) {
                 getBeatmapset = async () => {
                     try {
                         return await NekohaApiService.getBeatmapset(id);
@@ -91,7 +96,10 @@ export class BeatmapsetController {
                 try {
                     let concurrencyLimit = 1;
                     const beatmapsets = [];
-                    if (Environment.env.THIRD_PARTY_API === true) {
+                    if (Environment.env.MIRROR_DATABASE === true) {
+                        const rows = await MirrorBeatmapsetRepository.getByIds(batchIds);
+                        beatmapsets.push(...rows);
+                    } else if (Environment.env.THIRD_PARTY_API === true) {
                         concurrencyLimit = 10;
                         for (let j = 0; j < batchIds.length; j += concurrencyLimit) {
                             const chunk = batchIds.slice(j, j + concurrencyLimit);
